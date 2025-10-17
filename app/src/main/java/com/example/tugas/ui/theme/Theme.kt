@@ -1,6 +1,5 @@
 package com.example.tugas.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,15 +11,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = White,
+    secondary = AlmostBlack,
+    tertiary = Black,
+    background = DarkBackground,
+    surface = BluePrimary,
+    onSurface = Charcoal
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = DarkGray2,
+    secondary = LightGrayE3,
+    tertiary = Black,
+    background = LightBackground,
+    surface = BluePrimary,
+    onSurface = Charcoal
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

@@ -12,13 +12,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugas.ui.components.TopAppBar
+import com.example.tugas.ui.theme.TugasTheme
 
 @Composable
 fun ToDoListScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = "Splash Screen",
+                title = "Daftar Tugas",
                 onProfileClick = {navController.navigate("profile")}
             )
         }
@@ -37,5 +38,7 @@ fun ToDoListScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun ToDoListScreenPreview() {
-    ToDoListScreen(navController = rememberNavController())
+    TugasTheme {
+        ToDoListScreen(navController = rememberNavController())
+    }
 }

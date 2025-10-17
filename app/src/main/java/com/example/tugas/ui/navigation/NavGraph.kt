@@ -30,7 +30,11 @@ fun NavGraph() {
         }
 
         composable("profile") {
-            ProfileScreen(navController = navController)
+            ProfileScreen(
+                navController = navController,
+                name = "Mustafa Fathur Rahman",
+                email = "mustafa.fathur@gmail.com"
+            )
         }
     }
 }
