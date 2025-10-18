@@ -97,6 +97,13 @@ fun SplashScreen(navController: NavHostController) {
                 )
             }
         }
+        Text(
+            text = "Made by Mustafa Fathur Rahman",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomCenter)
+        )
     }
 }
 

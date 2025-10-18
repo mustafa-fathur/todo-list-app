@@ -195,7 +195,7 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Privacy Policy  •  Terms of Service",
+                        text = "Mustafa • Fathur • Rahman",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
