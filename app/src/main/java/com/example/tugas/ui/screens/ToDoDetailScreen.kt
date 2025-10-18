@@ -1,134 +1,103 @@
 package com.example.tugas.ui.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.tugas.ui.theme.TugasTheme
+import com.example.tugas.ui.viewmodel.ToDoViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoDetailScreen(navController: NavHostController, todoId: String?) {
+fun ToDoDetailScreen(
+    navController: NavHostController,
+    todoId: String?,
+    vm: ToDoViewModel = viewModel()
+) {
+    // Attempt to find the task using the ID from the navigation arguments
+    val todo = todoId?.let { vm.getTodoById(it) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-//                    Title(
-//                        title = "Detail Tugas",
-//                        modifier = Modifier
-//                    )
-                },
+                title = { Text(todo?.title ?: "Task Not Found") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back to Todo List")
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { /* menghapus data tugas */ }
-                    ) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete Todo")
+                    if (todo != null) {
+                        IconButton(onClick = {
+                            vm.removeToDo(todo.id)
+                            navController.popBackStack() // Go back after deletion
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.background),
+                }
             )
-        },
-        floatingActionButtonPosition = FabPosition.End,
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { /* fab click handler */ },
-                containerColor = MaterialTheme.colorScheme.secondary,
+        }
+    ) { innerPadding ->
+        if (todo == null) {
+            // Handle case where todoId is null or the task is not found
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
             ) {
                 Text(
-                    text = "Tandai Sebagai Selesai",
-                    color = MaterialTheme.colorScheme.onSurface
+                    text = "The requested To-Do item was not found.",
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
-        },
-        bottomBar = {}
-    ) { innerPaddding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPaddding)
-                .padding(24.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Judul Tugas",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
+        } else {
+            // Display Task Details
             Column(
-                modifier = Modifier.padding(6.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
             ) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.List,
-                        contentDescription = "Ini doang yang paling mendekati utk mewakili deskripsi"
+                Text(
+                    text = "Description:",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = todo.description,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Text(
+                    text = "Due Date:",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault()).format(todo.date),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = todo.isDone,
+                        onCheckedChange = { vm.toggleDone(todo.id) },
                     )
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
+                    Spacer(Modifier.width(8.dp))
                     Text(
-                        "Deskripsi sadajsdnjs andkjan kjdnsakjnd kjsadnkdn kansdjsandkj naskjndjkasndkjasndkasndkjasnkj"
-                    )
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                Row(
-                    Modifier.clickable(onClick = {})
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.DateRange,
-                        contentDescription = "Ini doang yang paling mendekati utk mewakili deskripsi"
-                    )
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Text(
-                        text = "Garis Mati"
+                        text = if (todo.isDone) "Completed" else "Mark as Complete",
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
         }
-    }
-}
-
-
-@Preview
-@Composable
-fun ToDoDetailScreenPreview() {
-    TugasTheme {
-        ToDoDetailScreen(navController = rememberNavController(), todoId = null)
     }
 }

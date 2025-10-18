@@ -29,7 +29,7 @@ fun NavGraph() {
         composable(
             route = "todos/{todoId}",
             arguments = listOf(navArgument("todoId") { type = NavType.StringType })) { backStackEntry ->
-            val todoId = backStackEntry.arguments?.getString("disasterId")
+            val todoId = backStackEntry.arguments?.getString("todoId")
             ToDoDetailScreen(navController = navController, todoId = todoId)
         }
 
